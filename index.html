@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gordos — Construção e Reforma</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              orange: '#EA580C',
+              'orange-dark': '#C2410C',
+              'orange-light': '#FFEDD5',
+              slate: '#1E293B',
+              bg: '#F8FAFC',
+              emerald: '#10B981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Oculta scrollbars mantendo a funcionalidade de rolagem */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Animação suave para Modais e Abas */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out forwards;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-sheet {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-sheet.closed {
+      transform: translateY(100%);
+    }
+    .modal-sheet.open {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center p-2 sm:p-6 font-sans antialiased text-slate-800 select-none">
+
+  <!-- MOLDURA DO SMARTPHONE (375px x 750px) -->
+  <div class="w-[375px] h-[750px] bg-slate-50 rounded-[48px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border-[10px] border-slate-800 relative overflow-hidden flex flex-col shrink-0">
+    
+    <!-- NOTCH DO SMARTPHONE -->
+    <div class="w-36 h-5 bg-slate-800 rounded-b-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+      <div class="w-12 h-1 bg-slate-700 rounded-full"></div>
+    </div>
+
+    <!-- STATUS BAR (Horário e Ícones) -->
+    <div class="w-full h-8 bg-brand-slate text-white px-6 pt-1 flex items-center justify-between text-xs font-semibold z-40 shrink-0">
+      <span id="current-time">09:41</span>
+      <div class="flex items-center gap-1.5">
+        <!-- Signal Icon -->
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.2.2-.2.51 0 .71.1.1.23.15.35.15s.26-.05.35-.15l1.03-1.03C7.62 20.26 9.71 21 12 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16.5c-4.14 0-7.5-3.36-7.5-7.5S7.86 4.5 12 4.5s7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5z"/></svg>
+        <!-- Wifi Icon -->
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 4C7.31 0 2.07 2.38 0 3.9L12 21 24 3.9C21.93 2.38 16.69 0 12 4z"/></svg>
+        <!-- Battery Icon -->
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M17 4h-3V2h-4v2H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
+      </div>
+    </div>
+
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL COM ROLAGEM -->
+    <main class="flex-1 overflow-y-auto no-scrollbar relative bg-[#F8FAFC] pb-20">
+
+      <!-- ==================== ABA 1: LOJA (HOME) ==================== -->
+      <section id="tab-loja" class="tab-content active">
+        <!-- Header Fixo da Loja -->
+        <header class="bg-brand-slate text-white p-4 pt-2 shadow-md sticky top-0 z-30">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center font-black text-white text-lg shadow">
+                G
+              </div>
+              <div>
+                <h1 class="font-extrabold text-base tracking-tight leading-none text-white">GORDOS</h1>
+                <p class="text-[10px] text-slate-300 font-medium">Tudo para sua Obra</p>
+              </div>
+            </div>
+            
+            <!-- Seletor de Filial -->
+            <button onclick="showToast('Filial alterada para Marginal Tietê')" class="flex items-center gap-1 bg-slate-700/80 hover:bg-slate-700 px-2.5 py-1 rounded-full text-[11px] text-slate-200 border border-slate-600 transition">
+              <svg class="w-3 h-3 text-brand-orange shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <span class="truncate max-w-[110px]">Marginal Tietê</span>
+              <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </div>
+
+          <!-- Barra de Busca e Filtro -->
+          <div class="flex items-center gap-2 mt-3">
+            <div class="relative flex-1">
+              <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Buscar cimento, pisos, tintas..." class="w-full bg-slate-900/90 text-white placeholder-slate-400 text-xs rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-orange border border-slate-700">
+              <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <button onclick="showToast('Filtros avançados em breve')" class="p-2.5 bg-brand-orange text-white rounded-xl hover:bg-brand-orange-dark transition shadow">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="p-4 space-y-4">
+          <!-- Banner Promocional -->
+          <div class="bg-gradient-to-r from-brand-orange to-amber-600 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden">
+            <div class="relative z-10">
+              <span class="bg-slate-900/40 text-amber-200 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full">Festival da Reforma</span>
+              <h2 class="text-lg font-black leading-tight mt-1">Pisos & Tintas com até 30% OFF</h2>
+              <p class="text-xs text-orange-100 mt-1">Entregamos direto no canteiro da sua obra!</p>
+              <button onclick="showToast('Cupom REFORMA30 aplicado!')" class="mt-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-md transition flex items-center gap-1.5">
+                <span>Garantir Desconto</span>
+                <svg class="w-3.5 h-3.5 text-brand-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </div>
+            <div class="absolute -right-4 -bottom-6 opacity-20 text-white">
+              <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M19 2H5c-1.11 0-2 .9-2 2v16c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V6h10v2z"/></svg>
+            </div>
+          </div>
+
+          <!-- Carrossel / Atalhos de Categorias -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Categorias da Obra</h3>
+              <span class="text-[11px] text-brand-orange font-semibold cursor-pointer">Ver todas</span>
+            </div>
+            <div class="flex gap-2.5 overflow-x-auto no-scrollbar py-1">
+              <button onclick="filterByCategory('Todos')" class="cat-pill shrink-0 bg-brand-slate text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-sm border border-slate-700">
+                <span>🧱 Todos</span>
+              </button>
+              <button onclick="filterByCategory('Bruto & Cimento')" class="cat-pill shrink-0 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-slate-200 shadow-sm">
+                <span>🏗️ Bruto</span>
+              </button>
+              <button onclick="filterByCategory('Pisos & Revestimentos')" class="cat-pill shrink-0 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-slate-200 shadow-sm">
+                <span>📐 Pisos</span>
+              </button>
+              <button onclick="filterByCategory('Tintas')" class="cat-pill shrink-0 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-slate-200 shadow-sm">
+                <span>🎨 Tintas</span>
+              </button>
+              <button onclick="filterByCategory('Elétrica & Iluminação')" class="cat-pill shrink-0 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-slate-200 shadow-sm">
+                <span>⚡ Elétrica</span>
+              </button>
+              <button onclick="filterByCategory('Hidráulica')" class="cat-pill shrink-0 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-slate-200 shadow-sm">
+                <span>🚰 Hidráulica</span>
+              </button>
+              <button onclick="filterByCategory('Ferramentas')" class="cat-pill shrink-0 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 border border-slate-200 shadow-sm">
+                <span>🛠️ Ferramentas</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card Chamativo para Calculadora de Materiais -->
+          <div onclick="switchTab('calculadoras')" class="bg-slate-800 text-white rounded-2xl p-3.5 flex items-center gap-3 cursor-pointer shadow-md hover:bg-slate-700 transition border border-slate-700">
+            <div class="w-11 h-11 bg-brand-orange/20 border border-brand-orange/40 rounded-xl flex items-center justify-center text-brand-orange shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-xs text-white truncate">Calculadora de Materiais</h4>
+                <span class="bg-brand-emerald text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Rápido</span>
+              </div>
+              <p class="text-[11px] text-slate-300 mt-0.5 truncate">Evite sobras! Calcule a tinta e o piso exatos em m².</p>
+            </div>
+            <svg class="w-5 h-5 text-brand-orange shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+
+          <!-- Feed de Produtos em Destaque -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Produtos em Destaque</h3>
+              <span id="product-count" class="text-[11px] text-slate-500">6 itens</span>
+            </div>
+
+            <!-- Grid de Produtos -->
+            <div id="products-grid" class="grid grid-cols-2 gap-3">
+              <!-- Renderizado via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ABA 2: CALCULADORAS ==================== -->
+      <section id="tab-calculadoras" class="tab-content">
+        <!-- Header da Calculadora -->
+        <header class="bg-brand-slate text-white p-4 pt-2 shadow-md sticky top-0 z-30">
+          <h1 class="font-bold text-base text-white">Calculadora da Obra</h1>
+          <p class="text-xs text-slate-300">Dimensionamento rápido de pisos, azulejos e tintas</p>
+        </header>
+
+        <div class="p-4 space-y-4">
+          <!-- Chaveador do Tipo de Cálculo -->
+          <div class="grid grid-cols-2 p-1 bg-slate-200 rounded-xl gap-1">
+            <button id="calc-tab-piso" onclick="setCalcType('piso')" class="py-2 text-xs font-bold rounded-lg bg-white text-brand-slate shadow transition">
+              🧱 Pisos & Azulejos
+            </button>
+            <button id="calc-tab-tinta" onclick="setCalcType('tinta')" class="py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-brand-slate transition">
+              🎨 Tintas & Paredes
+            </button>
+          </div>
+
+          <!-- Card de Entrada de Dados -->
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+            <h2 id="calc-title" class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+              <span>📐 Medidas do Ambiente</span>
+            </h2>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Largura (m)</label>
+                <div class="relative">
+                  <input type="number" id="calc-width" value="4.0" step="0.5" min="0.5" oninput="runCalculation()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-orange">
+                  <span class="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">m</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Comprimento (m)</label>
+                <div class="relative">
+                  <input type="number" id="calc-length" value="5.0" step="0.5" min="0.5" oninput="runCalculation()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-orange">
+                  <span class="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">m</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Campo Condicional (Pé-direito para tinta) -->
+            <div id="calc-height-container" class="hidden">
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Altura do Pé-Direito (m)</label>
+              <div class="relative">
+                <input type="number" id="calc-height" value="2.8" step="0.1" min="1.0" oninput="runCalculation()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-orange">
+                <span class="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">m</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-[11px] font-semibold text-slate-600">Margem de Perda / Cortes</label>
+                <span id="margin-val-label" class="text-xs font-bold text-brand-orange">10%</span>
+              </div>
+              <input type="range" id="calc-margin" min="5" max="20" value="10" step="1" oninput="runCalculation()" class="w-full accent-brand-orange">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>5% (Padrão)</span>
+                <span>10% (Recomendado)</span>
+                <span>20% (Diagonal)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Painel do Resultado do Cálculo -->
+          <div class="bg-brand-slate text-white rounded-2xl p-4 shadow-md space-y-3 relative overflow-hidden">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Área Total Calculada</p>
+                <div class="text-2xl font-black text-white flex items-baseline gap-1">
+                  <span id="res-area">20.0</span>
+                  <span class="text-xs font-medium text-slate-300">m²</span>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-[11px] text-slate-400 uppercase font-semibold">Com margem de segurança</p>
+                <p id="res-area-margin" class="text-sm font-bold text-brand-orange">22.0 m²</p>
+              </div>
+            </div>
+
+            <hr class="border-slate-700">
+
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-300">Produto Recomendado:</span>
+                <span id="res-product-name" class="font-bold text-white text-right max-w-[180px] truncate">Porcelanato Bisotado 84x84</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-300">Quantidade Necessária:</span>
+                <span id="res-qty-boxes" class="font-extrabold text-brand-emerald">10 caixas</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-300">Valor Estimado:</span>
+                <span id="res-total-cost" class="font-bold text-white">R$ 699,00</span>
+              </div>
+            </div>
+
+            <button onclick="addCalculatedToCart()" class="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-bold text-xs py-3 rounded-xl shadow transition flex items-center justify-center gap-2 mt-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+              <span>Adicionar Quantidade Exata na Obra</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ABA 3: MINHA OBRA (CARRINHO & ORÇAMENTO) ==================== -->
+      <section id="tab-minha-obra" class="tab-content">
+        <!-- Header de Orçamentos -->
+        <header class="bg-brand-slate text-white p-4 pt-2 shadow-md sticky top-0 z-30 flex items-center justify-between">
+          <div>
+            <h1 class="font-bold text-base text-white">Minha Obra</h1>
+            <p class="text-xs text-slate-300">Lista de Materiais & Carrinho</p>
+          </div>
+          <span id="cart-item-badge" class="bg-brand-orange text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow">
+            0 itens
+          </span>
+        </header>
+
+        <div class="p-4 space-y-4">
+          <!-- Opções de Entrega -->
+          <div class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200">
+            <p class="text-[11px] font-bold text-slate-500 uppercase mb-2">Modalidade de Logística</p>
+            <div class="grid grid-cols-2 gap-2">
+              <label onclick="setDeliveryMode('retirada')" id="mode-retirada-label" class="border-2 border-brand-orange bg-orange-50/50 p-2.5 rounded-xl cursor-pointer flex flex-col justify-between transition">
+                <div class="flex items-center gap-1.5">
+                  <input type="radio" name="delivery-mode" checked class="accent-brand-orange">
+                  <span class="text-xs font-bold text-slate-800">Retirar na Loja</span>
+                </div>
+                <span class="text-[10px] text-brand-emerald font-semibold mt-1">Grátis (Em 2h)</span>
+              </label>
+
+              <label onclick="setDeliveryMode('entrega')" id="mode-entrega-label" class="border-2 border-slate-200 p-2.5 rounded-xl cursor-pointer flex flex-col justify-between transition">
+                <div class="flex items-center gap-1.5">
+                  <input type="radio" name="delivery-mode" class="accent-brand-orange">
+                  <span class="text-xs font-bold text-slate-800">Canteiro de Obras</span>
+                </div>
+                <span class="text-[10px] text-slate-500 font-medium mt-1">Frete: R$ 45,00</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Lista de Materiais Divididos por Etapas -->
+          <div id="cart-items-container" class="space-y-4">
+            <!-- Renderizado via JS -->
+          </div>
+
+          <!-- Resumo dos Valores -->
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-2">
+            <h3 class="font-bold text-slate-800 text-xs uppercase border-b border-slate-100 pb-2">Resumo Financeiro da Obra</h3>
+            
+            <div class="flex justify-between text-xs text-slate-600">
+              <span>Subtotal dos Materiais</span>
+              <span id="summary-subtotal" class="font-semibold text-slate-800">R$ 0,00</span>
+            </div>
+            
+            <div class="flex justify-between text-xs text-slate-600">
+              <span>Frete de Entrega</span>
+              <span id="summary-shipping" class="font-semibold text-brand-emerald">GRÁTIS</span>
+            </div>
+
+            <div class="flex justify-between text-xs text-slate-600">
+              <span>Desconto Clube Gordos</span>
+              <span id="summary-discount" class="font-semibold text-brand-orange">- R$ 0,00</span>
+            </div>
+
+            <hr class="border-slate-100 my-1">
+
+            <div class="flex justify-between text-sm font-black text-slate-900 pt-1">
+              <span>TOTAL ESTIMADO</span>
+              <span id="summary-total" class="text-brand-orange text-base">R$ 0,00</span>
+            </div>
+          </div>
+
+          <!-- Botões de Ação do Carrinho -->
+          <div class="space-y-2">
+            <button onclick="finishOrder()" class="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-bold text-xs py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Finalizar Pedido / Solicitar Entrega</span>
+            </button>
+            
+            <button onclick="showToast('Orçamento salvo em PDF no seu histórico!')" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span>Baixar PDF do Orçamento</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ABA 4: ATENDIMENTO & PERFIL ==================== -->
+      <section id="tab-perfil" class="tab-content">
+        <!-- Header do Perfil -->
+        <header class="bg-brand-slate text-white p-4 pt-2 shadow-md sticky top-0 z-30">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-brand-orange text-white font-extrabold rounded-full flex items-center justify-center text-lg shadow-inner border-2 border-white">
+              RS
+            </div>
+            <div>
+              <h1 class="font-bold text-sm text-white">Eng. Roberto Silva</h1>
+              <p class="text-xs text-brand-orange font-semibold flex items-center gap-1">
+                <span>★ Cliente VIP Pro Gordos</span>
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-4 space-y-4">
+          <!-- Cartão Falar com Especialista da Obra -->
+          <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl p-4 shadow-md relative overflow-hidden">
+            <div class="relative z-10">
+              <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Consultoria Técnica</span>
+              <h2 class="text-sm font-bold mt-1">Dúvida no Traço ou Especificação?</h2>
+              <p class="text-xs text-emerald-100 mt-0.5">Fale agora com nosso Engenheiro Consultor pelo WhatsApp.</p>
+              
+              <button onclick="showToast('Conectando com Engenheiro da Unidade...')" class="mt-3 bg-white text-emerald-800 font-bold text-xs px-4 py-2 rounded-xl shadow hover:bg-emerald-50 transition flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.842-1.001z"/></svg>
+                <span>Falar com Especialista</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Clube de Vantagens Gordos -->
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-slate-800 text-xs uppercase">Clube de Vantagens Gordos</h3>
+              <span class="text-xs font-black text-brand-orange">4.850 Pontos</span>
+            </div>
+
+            <!-- Barra de Progresso do Nível -->
+            <div>
+              <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                <span>Nível Prata</span>
+                <span>Faltam 150 pts para Ouro</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-brand-orange h-full w-[85%] rounded-full"></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                <span class="text-[10px] text-slate-500 block">Resgatar Desconto</span>
+                <span class="text-xs font-bold text-slate-800">R$ 100 OFF em Tintas</span>
+              </div>
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                <span class="text-[10px] text-slate-500 block">Frete Grátis Obra</span>
+                <span class="text-xs font-bold text-slate-800">2 Cupons Ativos</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Histórico de Orçamentos e Comprovantes -->
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+            <h3 class="font-bold text-slate-800 text-xs uppercase">Histórico da Suas Obras</h3>
+
+            <div class="space-y-2">
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">Orçamento #8492 — Reforma Banheiro</h4>
+                  <p class="text-[10px] text-slate-400">12/08/2026 • 8 itens</p>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Entregue</span>
+              </div>
+
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">Orçamento #8210 — Pintura Fachada</h4>
+                  <p class="text-[10px] text-slate-400">02/08/2026 • 3 itens</p>
+                </div>
+                <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Em Aprov.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION (4 ABAS) -->
+    <nav class="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 flex items-center justify-around z-40 px-2 shadow-lg">
+      
+      <!-- Aba 1: Loja -->
+      <button onclick="switchTab('loja')" id="nav-loja" class="nav-btn flex flex-col items-center justify-center text-brand-orange w-16">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="text-[10px] font-extrabold mt-0.5">Loja</span>
+      </button>
+
+      <!-- Aba 2: Calculadoras -->
+      <button onclick="switchTab('calculadoras')" id="nav-calculadoras" class="nav-btn flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 w-16">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        <span class="text-[10px] font-medium mt-0.5">Calculadoras</span>
+      </button>
+
+      <!-- Aba 3: Minha Obra -->
+      <button onclick="switchTab('minha-obra')" id="nav-minha-obra" class="nav-btn flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 w-16 relative">
+        <div class="relative">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span id="nav-cart-badge" class="absolute -top-1.5 -right-2 bg-brand-orange text-white text-[9px] font-black rounded-full w-4 h-4 flex items-center justify-center">0</span>
+        </div>
+        <span class="text-[10px] font-medium mt-0.5">Minha Obra</span>
+      </button>
+
+      <!-- Aba 4: Perfil -->
+      <button onclick="switchTab('perfil')" id="nav-perfil" class="nav-btn flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 w-16">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <span class="text-[10px] font-medium mt-0.5">Perfil</span>
+      </button>
+
+    </nav>
+
+    <!-- ==================== MODAL DE DETALHES DO PRODUTO ==================== -->
+    <div id="product-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center hidden">
+      <div class="bg-white w-full max-w-[375px] rounded-t-3xl p-4 space-y-3 modal-sheet closed relative max-h-[85%] overflow-y-auto no-scrollbar">
+        <button onclick="closeProductModal()" class="absolute right-4 top-4 bg-slate-100 hover:bg-slate-200 text-slate-600 p-1.5 rounded-full">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <img id="modal-img" src="" alt="Produto" class="w-full h-40 object-cover rounded-2xl">
+
+        <div>
+          <span id="modal-badge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 uppercase">
+            Estoque Garantido
+          </span>
+          <h2 id="modal-title" class="text-sm font-bold text-slate-900 mt-1">Nome do Produto</h2>
+          <p id="modal-stock" class="text-[11px] text-slate-500">Filial Marginal Tietê: 142 unidades</p>
+        </div>
+
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1">
+          <h4 class="text-[11px] font-bold text-slate-700 uppercase">Ficha Técnica & Rendimento</h4>
+          <p id="modal-spec" class="text-xs text-slate-600">Especificações técnicas completas do material para sua obra.</p>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase font-semibold">Preço Unitário</span>
+            <span id="modal-price" class="text-lg font-black text-brand-orange">R$ 0,00</span>
+          </div>
+
+          <button id="modal-add-btn" onclick="" class="bg-brand-orange hover:bg-brand-orange-dark text-white text-xs font-bold px-5 py-3 rounded-xl shadow transition">
+            Adicionar à Obra
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="absolute top-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-2xl z-50 transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-1.5 border border-slate-700">
+      <svg class="w-4 h-4 text-brand-emerald" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <span id="toast-msg">Ação realizada!</span>
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT DE INTERATIVIDADE -->
+  <script>
+    // ================= DATA STATE =================
+    const productsData = [
+      {
+        id: 1,
+        name: "Porcelanato Bisotado Delta 84x84cm",
+        category: "Pisos & Revestimentos",
+        price: 69.90,
+        unit: "m²",
+        badge: "RETIRE EM 2H",
+        badgeColor: "bg-emerald-100 text-emerald-800",
+        stock: "142 m² na Filial",
+        img: "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=400&q=80",
+        spec: "Acabamento polido, Borda retificada, PEI 4. Ideal para ambientes internos.",
+        phase: "Fase 2: Acabamento"
+      },
+      {
+        id: 2,
+        name: "Tinta Suvinil Toque da Terra 18L",
+        category: "Tintas",
+        price: 389.90,
+        unit: "lata",
+        badge: "PRONTA ENTREGA NA OBRA",
+        badgeColor: "bg-orange-100 text-orange-800",
+        stock: "28 latas na Filial",
+        img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=400&q=80",
+        spec: "Rendimento até 120m² por demão. Acabamento fosco aveludado e lavável.",
+        phase: "Fase 2: Acabamento"
+      },
+      {
+        id: 3,
+        name: "Cimento CP II Z 32 Tocantins 50kg",
+        category: "Bruto & Cimento",
+        price: 34.90,
+        unit: "un",
+        badge: "PRONTA ENTREGA NA OBRA",
+        badgeColor: "bg-orange-100 text-orange-800",
+        stock: "520 sacos na Filial",
+        img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=400&q=80",
+        spec: "Uso geral em fundações, vigas, lajes e emboço. Alta resistência inicial.",
+        phase: "Fase 1: Estrutura"
+      },
+      {
+        id: 4,
+        name: "Argamassa ACIII Quartzolit 20kg",
+        category: "Bruto & Cimento",
+        price: 42.90,
+        unit: "un",
+        badge: "RETIRE EM 2H",
+        badgeColor: "bg-emerald-100 text-emerald-800",
+        stock: "85 sacos na Filial",
+        img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80",
+        spec: "Alta aderência para porcelanatos grandes formatos, piscinas e faixadas.",
+        phase: "Fase 1: Estrutura"
+      },
+      {
+        id: 5,
+        name: "Furadeira/Parafusadeira Bosch 18V",
+        category: "Ferramentas",
+        price: 549.00,
+        unit: "un",
+        badge: "PRONTA ENTREGA NA OBRA",
+        badgeColor: "bg-orange-100 text-orange-800",
+        stock: "12 un na Filial",
+        img: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=400&q=80",
+        spec: "Motor Brushless, 2 Baterias 2.0Ah, Carregador Bivolt e Maleta inclusos.",
+        phase: "Ferramentas & Equipamentos"
+      },
+      {
+        id: 6,
+        name: "Tubo PVC Esgoto 100mm 6M Tigre",
+        category: "Hidráulica",
+        price: 58.50,
+        unit: "un",
+        badge: "RETIRE EM 2H",
+        badgeColor: "bg-emerald-100 text-emerald-800",
+        stock: "60 barras na Filial",
+        img: "https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=400&q=80",
+        spec: "Norma NBR 5688. Junta soldável e elástica para esgoto predial.",
+        phase: "Fase 1: Estrutura"
+      }
+    ];
+
+    let cartState = [
+      { id: 1, qty: 10 },
+      { id: 3, qty: 5 }
+    ];
+
+    let currentCalcType = 'piso';
+    let deliveryMode = 'retirada';
+
+    // ================= NAVEGAÇÃO ENTRE ABAS =================
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+
+      // Atualiza estilo dos botões da nav
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-brand-orange');
+        btn.classList.add('text-slate-400');
+        btn.querySelector('span').classList.remove('font-extrabold');
+      });
+
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if(activeNav) {
+        activeNav.classList.remove('text-slate-400');
+        activeNav.classList.add('text-brand-orange');
+        activeNav.querySelector('span').classList.add('font-extrabold');
+      }
+    }
+
+    // ================= RENDERIZAR FEED DE PRODUTOS =================
+    function renderProducts(items = productsData) {
+      const grid = document.getElementById('products-grid');
+      document.getElementById('product-count').textContent = `${items.length} itens`;
+
+      grid.innerHTML = items.map(p => `
+        <div class="bg-white rounded-2xl p-2.5 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
+          <div onclick="openProductModal(${p.id})" class="cursor-pointer">
+            <div class="relative">
+              <img src="${p.img}" alt="${p.name}" class="w-full h-28 object-cover rounded-xl">
+              <span class="absolute top-1.5 left-1.5 text-[8px] font-extrabold px-1.5 py-0.5 rounded ${p.badgeColor} shadow-sm uppercase">
+                ${p.badge}
+              </span>
+            </div>
+            <p class="text-[10px] text-slate-400 uppercase font-semibold mt-2">${p.category}</p>
+            <h4 class="font-bold text-xs text-slate-900 leading-snug line-clamp-2 h-8 mt-0.5">${p.name}</h4>
+          </div>
+
+          <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-black text-brand-orange">R$ ${p.price.toFixed(2).replace('.', ',')}</span>
+              <span class="text-[9px] text-slate-400">/${p.unit}</span>
+            </div>
+            <button onclick="addToCart(${p.id}, 1)" class="bg-brand-orange hover:bg-brand-orange-dark text-white p-2 rounded-xl shadow transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterByCategory(cat) {
+      if(cat === 'Todos') {
+        renderProducts(productsData);
+      } else {
+        const filtered = productsData.filter(p => p.category === cat);
+        renderProducts(filtered);
+      }
+      showToast(`Filtrado por: ${cat}`);
+    }
+
+    function filterProducts() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const filtered = productsData.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+      renderProducts(filtered);
+    }
+
+    // ================= CALCULADORA JS INTERATIVA =================
+    function setCalcType(type) {
+      currentCalcType = type;
+      const btnPiso = document.getElementById('calc-tab-piso');
+      const btnTinta = document.getElementById('calc-tab-tinta');
+      const heightCont = document.getElementById('calc-height-container');
+
+      if(type === 'piso') {
+        btnPiso.className = "py-2 text-xs font-bold rounded-lg bg-white text-brand-slate shadow transition";
+        btnTinta.className = "py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-brand-slate transition";
+        heightCont.classList.add('hidden');
+        document.getElementById('res-product-name').textContent = "Porcelanato Bisotado 84x84";
+      } else {
+        btnTinta.className = "py-2 text-xs font-bold rounded-lg bg-white text-brand-slate shadow transition";
+        btnPiso.className = "py-2 text-xs font-bold rounded-lg text-slate-600 hover:text-brand-slate transition";
+        heightCont.classList.remove('hidden');
+        document.getElementById('res-product-name').textContent = "Tinta Suvinil 18L";
+      }
+      runCalculation();
+    }
+
+    function runCalculation() {
+      const w = parseFloat(document.getElementById('calc-width').value) || 0;
+      const l = parseFloat(document.getElementById('calc-length').value) || 0;
+      const h = parseFloat(document.getElementById('calc-height').value) || 0;
+      const margin = parseInt(document.getElementById('calc-margin').value) || 10;
+
+      document.getElementById('margin-val-label').textContent = `${margin}%`;
+
+      let areaBase = 0;
+      if(currentCalcType === 'piso') {
+        areaBase = w * l;
+      } else {
+        // Área das 4 paredes
+        areaBase = (2 * w * h) + (2 * l * h);
+      }
+
+      const areaTotalWithMargin = areaBase * (1 + (margin / 100));
+
+      document.getElementById('res-area').textContent = areaBase.toFixed(1);
+      document.getElementById('res-area-margin').textContent = `${areaTotalWithMargin.toFixed(1)} m²`;
+
+      if(currentCalcType === 'piso') {
+        // Supondo caixa de 2.2 m² de porcelanato (R$ 69,90/m² -> R$ 153,78 caixa)
+        const boxes = Math.ceil(areaTotalWithMargin / 2.2);
+        const totalCost = boxes * 2.2 * 69.90;
+
+        document.getElementById('res-qty-boxes').textContent = `${boxes} caixas (${(boxes * 2.2).toFixed(1)} m²)`;
+        document.getElementById('res-total-cost').textContent = `R$ ${totalCost.toFixed(2).replace('.', ',')}`;
+      } else {
+        // Supondo lata 18L cobrindo ~100m² em 2 demãos
+        const cans = Math.ceil(areaTotalWithMargin / 100);
+        const totalCost = cans * 389.90;
+
+        document.getElementById('res-qty-boxes').textContent = `${cans} lata(s) de 18L`;
+        document.getElementById('res-total-cost').textContent = `R$ ${totalCost.toFixed(2).replace('.', ',')}`;
+      }
+    }
+
+    function addCalculatedToCart() {
+      if(currentCalcType === 'piso') {
+        const w = parseFloat(document.getElementById('calc-width').value) || 0;
+        const l = parseFloat(document.getElementById('calc-length').value) || 0;
+        const margin = parseInt(document.getElementById('calc-margin').value) || 10;
+        const boxes = Math.ceil((w * l * (1 + margin/100)) / 2.2);
+        addToCart(1, boxes);
+      } else {
+        addToCart(2, 1);
+      }
+      switchTab('minha-obra');
+    }
+
+    // ================= GESTÃO DO CARRINHO =================
+    function addToCart(productId, qtyToAdd = 1) {
+      const existing = cartState.find(item => item.id === productId);
+      if(existing) {
+        existing.qty += qtyToAdd;
+      } else {
+        cartState.push({ id: productId, qty: qtyToAdd });
+      }
+      updateCartUI();
+      showToast("Item adicionado à sua Obra!");
+    }
+
+    function updateQty(productId, delta) {
+      const item = cartState.find(i => i.id === productId);
+      if(item) {
+        item.qty += delta;
+        if(item.qty <= 0) {
+          cartState = cartState.filter(i => i.id !== productId);
+        }
+      }
+      updateCartUI();
+    }
+
+    function setDeliveryMode(mode) {
+      deliveryMode = mode;
+      const labRet = document.getElementById('mode-retirada-label');
+      const labEnt = document.getElementById('mode-entrega-label');
+
+      if(mode === 'retirada') {
+        labRet.className = "border-2 border-brand-orange bg-orange-50/50 p-2.5 rounded-xl cursor-pointer flex flex-col justify-between transition";
+        labEnt.className = "border-2 border-slate-200 p-2.5 rounded-xl cursor-pointer flex flex-col justify-between transition";
+      } else {
+        labEnt.className = "border-2 border-brand-orange bg-orange-50/50 p-2.5 rounded-xl cursor-pointer flex flex-col justify-between transition";
+        labRet.className = "border-2 border-slate-200 p-2.5 rounded-xl cursor-pointer flex flex-col justify-between transition";
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const totalItemsCount = cartState.reduce((acc, item) => acc + item.qty, 0);
+      document.getElementById('cart-item-badge').textContent = `${totalItemsCount} itens`;
+      document.getElementById('nav-cart-badge').textContent = totalItemsCount;
+
+      const container = document.getElementById('cart-items-container');
+
+      if(cartState.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 text-center text-slate-400 border border-slate-200 space-y-2">
+            <svg class="w-10 h-10 mx-auto text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <p class="text-xs font-bold text-slate-600">Sua lista de obra está vazia</p>
+            <p class="text-[11px]">Navegue pela loja ou use a calculadora para adicionar materiais.</p>
+          </div>
+        `;
+        document.getElementById('summary-subtotal').textContent = "R$ 0,00";
+        document.getElementById('summary-total').textContent = "R$ 0,00";
+        return;
+      }
+
+      // Agrupa itens por Etapa da Obra
+      let subtotal = 0;
+      const phasesMap = {};
+
+      cartState.forEach(cartItem => {
+        const prod = productsData.find(p => p.id === cartItem.id);
+        if(!prod) return;
+
+        const itemTotal = prod.price * cartItem.qty;
+        subtotal += itemTotal;
+
+        if(!phasesMap[prod.phase]) {
+          phasesMap[prod.phase] = [];
+        }
+
+        phasesMap[prod.phase].push({
+          ...prod,
+          qty: cartItem.qty,
+          itemTotal
+        });
+      });
+
+      let html = '';
+      for (const [phaseName, items] of Object.entries(phasesMap)) {
+        html += `
+          <div class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200 space-y-2">
+            <h4 class="text-[11px] font-extrabold text-brand-orange uppercase tracking-wide flex items-center gap-1">
+              <span>🔨 ${phaseName}</span>
+            </h4>
+            <div class="divide-y divide-slate-100">
+              ${items.map(item => `
+                <div class="py-2.5 flex items-center justify-between gap-2">
+                  <img src="${item.img}" class="w-10 h-10 object-cover rounded-lg shrink-0">
+                  <div class="flex-1 min-w-0">
+                    <h5 class="text-xs font-bold text-slate-800 truncate">${item.name}</h5>
+                    <span class="text-[10px] text-slate-400">R$ ${item.price.toFixed(2).replace('.', ',')} / ${item.unit}</span>
+                  </div>
+                  
+                  <!-- Controles de Quantidade -->
+                  <div class="flex items-center gap-1.5 bg-slate-100 rounded-lg p-1">
+                    <button onclick="updateQty(${item.id}, -1)" class="w-5 h-5 bg-white text-slate-700 font-bold text-xs rounded flex items-center justify-center shadow-sm">-</button>
+                    <span class="text-xs font-extrabold text-slate-800 px-1">${item.qty}</span>
+                    <button onclick="updateQty(${item.id}, 1)" class="w-5 h-5 bg-white text-slate-700 font-bold text-xs rounded flex items-center justify-center shadow-sm">+</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+
+      // Cálculos Finais
+      const shippingCost = deliveryMode === 'entrega' ? 45.00 : 0.00;
+      const discount = subtotal > 300 ? 20.00 : 0.00;
+      const finalTotal = subtotal + shippingCost - discount;
+
+      document.getElementById('summary-subtotal').textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+      document.getElementById('summary-shipping').textContent = shippingCost === 0 ? 'GRÁTIS' : `R$ ${shippingCost.toFixed(2).replace('.', ',')}`;
+      document.getElementById('summary-discount').textContent = `- R$ ${discount.toFixed(2).replace('.', ',')}`;
+      document.getElementById('summary-total').textContent = `R$ ${finalTotal.toFixed(2).replace('.', ',')}`;
+    }
+
+    // ================= MODAL DO PRODUTO =================
+    function openProductModal(id) {
+      const p = productsData.find(item => item.id === id);
+      if(!p) return;
+
+      document.getElementById('modal-img').src = p.img;
+      document.getElementById('modal-title').textContent = p.name;
+      document.getElementById('modal-badge').textContent = p.badge;
+      document.getElementById('modal-stock').textContent = p.stock;
+      document.getElementById('modal-spec').textContent = p.spec;
+      document.getElementById('modal-price').textContent = `R$ ${p.price.toFixed(2).replace('.', ',')}`;
+
+      const btn = document.getElementById('modal-add-btn');
+      btn.onclick = () => {
+        addToCart(p.id, 1);
+        closeProductModal();
+      };
+
+      const modal = document.getElementById('product-modal');
+      const sheet = modal.querySelector('.modal-sheet');
+      
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        sheet.classList.remove('closed');
+        sheet.classList.add('open');
+      }, 10);
+    }
+
+    function closeProductModal() {
+      const modal = document.getElementById('product-modal');
+      const sheet = modal.querySelector('.modal-sheet');
+      sheet.classList.remove('open');
+      sheet.classList.add('closed');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    // ================= SIMULAR FINALIZAÇÃO DA COMPRA =================
+    function finishOrder() {
+      if(cartState.length === 0) {
+        showToast("Adicione itens para solicitar entrega.");
+        return;
+      }
+      showToast("🚀 Pedido #9042 Enviado à Unidade Marginal Tietê!");
+      cartState = [];
+      updateCartUI();
+    }
+
+    // ================= HELPER DE TOAST =================
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    // Real-time Clock
+    function updateClock() {
+      const now = new Date();
+      const hrs = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('current-time').textContent = `${hrs}:${mins}`;
+    }
+
+    // INICIALIZAÇÃO
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      runCalculation();
+      updateCartUI();
+      updateClock();
+      setInterval(updateClock, 30000);
+    });
+  </script>
+</body>
+</html>
