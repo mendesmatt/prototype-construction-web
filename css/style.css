@@ -1,0 +1,30 @@
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.25s ease-in-out forwards;
+}
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-sheet {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modal-sheet.closed {
+  transform: translateY(100%);
+}
+.modal-sheet.open {
+  transform: translateY(0);
+}
